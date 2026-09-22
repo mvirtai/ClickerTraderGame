@@ -1,48 +1,36 @@
 version: '3'
 
-vars:
-  SLN: ClickerTraderGame.sln
-  DOMAIN_PROJ: src/Domain/ClickerGame.Domain.csproj
-  TEST_PROJ: tests/Tests/ClickerGame.Tests.csproj
-  RUNNER_PROJ: src/Runner/ClickerGame.Runner.csproj
-
 tasks:
-  default:
-    desc: "Ajaa koodin kääntämisen ja kaikki yksikkötestit"
-    cmds:
-      - task: test
+  dev:
+    desc: "Käynnistää Go-backendin ja Blazor-frontendin rinnakkain"
+    deps:
+      - task: backend:dev
+      - task: frontend:dev
 
-  build:
-    desc: "Kääntää koko ratkaisun ja tarkistaa tyypit"
-    aliases: [b]
+  backend:dev:
+    desc: "Go-backend (portti 8080)"
+    dir: backend
     cmds:
-      - dotnet build {{.SLN}}
+      - task dev
 
-  test:
-    desc: "Ajaa kaikki xUnit-yksikkötestit"
-    aliases: [t]
+  frontend:dev:
+    desc: "Blazor WASM dev-palvelin (portti 5000)"
+    dir: frontend
     cmds:
-      - dotnet test {{.TEST_PROJ}} --logger "console;verbosity=normal"
+      - task dev
 
-  test:watch:
-    desc: "Ajaa testit automaattisesti aina tiedostoja muokattaessa"
-    aliases: [tw]
+  check:
+    desc: "Ajaa molempien puolten tarkistukset"
     cmds:
-      - dotnet watch test --project {{.TEST_PROJ}}
+      - task: backend:check
+      - task: frontend:check
 
-  run:
-    desc: "Käynnistää konsolipohjaisen simulaattoriajurin"
-    aliases: [r]
+  backend:check:
+    dir: backend
     cmds:
-      - dotnet run --project {{.RUNNER_PROJ}}
+      - task check
 
-  format:
-    desc: "Muotoilee C#-kooditiedostot virallisten standardien mukaan"
-    aliases: [fmt]
+  frontend:check:
+    dir: frontend
     cmds:
-      - dotnet format {{.SLN}}
-
-  clean:
-    desc: "Poistaa bin- ja obj-käännöskansiot"
-    cmds:
-      - dotnet clean {{.SLN}}
+      - task check

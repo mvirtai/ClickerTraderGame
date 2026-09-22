@@ -487,3 +487,12 @@ $RECYCLE.BIN/
 .plans/
 .visions/
 
+# Go backend
+backend/bin/
+backend/tmp/
+
+# Blazor WASM build output
+frontend/ClickerGame.Client/bin/
+frontend/ClickerGame.Client/obj/
+frontend/ClickerGame.Client/wwwroot/_framework/
+
