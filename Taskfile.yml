@@ -1,0 +1,48 @@
+version: '3'
+
+vars:
+  SLN: ClickerTraderGame.sln
+  DOMAIN_PROJ: src/Domain/ClickerGame.Domain.csproj
+  TEST_PROJ: tests/Tests/ClickerGame.Tests.csproj
+  RUNNER_PROJ: src/Runner/ClickerGame.Runner.csproj
+
+tasks:
+  default:
+    desc: "Ajaa koodin kääntämisen ja kaikki yksikkötestit"
+    cmds:
+      - task: test
+
+  build:
+    desc: "Kääntää koko ratkaisun ja tarkistaa tyypit"
+    aliases: [b]
+    cmds:
+      - dotnet build {{.SLN}}
+
+  test:
+    desc: "Ajaa kaikki xUnit-yksikkötestit"
+    aliases: [t]
+    cmds:
+      - dotnet test {{.TEST_PROJ}} --logger "console;verbosity=normal"
+
+  test:watch:
+    desc: "Ajaa testit automaattisesti aina tiedostoja muokattaessa"
+    aliases: [tw]
+    cmds:
+      - dotnet watch test --project {{.TEST_PROJ}}
+
+  run:
+    desc: "Käynnistää konsolipohjaisen simulaattoriajurin"
+    aliases: [r]
+    cmds:
+      - dotnet run --project {{.RUNNER_PROJ}}
+
+  format:
+    desc: "Muotoilee C#-kooditiedostot virallisten standardien mukaan"
+    aliases: [fmt]
+    cmds:
+      - dotnet format {{.SLN}}
+
+  clean:
+    desc: "Poistaa bin- ja obj-käännöskansiot"
+    cmds:
+      - dotnet clean {{.SLN}}
